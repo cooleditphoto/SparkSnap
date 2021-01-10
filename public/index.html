@@ -19,17 +19,4 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
-  <script src="wordpos/dist/wordpos.min.js"></script>
-  <script>
-    let wordpos = new WordPOS({
-      // preload: true,
-      dictPath: '/wordpos/dict',
-      profile: true
-    });
-  
-    wordpos.getAdverbs('this is lately a likely tricky business this is')
-      .then(res => {
-        console.log(res); // ["lately", "likely"]
-      });
-  </script>
 </html>
