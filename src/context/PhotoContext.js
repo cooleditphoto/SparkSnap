@@ -11,10 +11,10 @@ const PhotoContextProvider = props => {
 console.warn("runsearch query: "+query)
     axios
       .get(
-        `https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=${apiKey}&tags=${query}&per_page=24&format=json&nojsoncallback=1`
+        `https://ypjijw6zj5.execute-api.us-east-1.amazonaws.com/prod/getphotosbytags?tags=${query}&per_page=24`
       )
       .then(response => {
-        setImages(response.data.photos.photo);
+        setImages(response.data);
         setLoading(false);
       })
       .catch(error => {

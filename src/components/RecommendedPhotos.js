@@ -25,7 +25,9 @@ const RecommendedPhotos = () => {
     }
     let searchTagsString = searchTags.toString();
     console.warn("recommendedphotos searchtags: "+searchTagsString)
-
+    if(searchTagsString === ''){
+      searchTagsString = "default";
+    }
     runSearch(searchTagsString);
     // eslint-disable-next-line
   }, []);

@@ -33,7 +33,7 @@ class PhotoApp extends Component {
               <Route
                 exact
                 path="/"
-                render={() => <Redirect to="/mountain" />}
+                render={() => <Redirect to="/search/default" />}
               />
               <Route
                 path="/search/:searchInput"

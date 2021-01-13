@@ -11,7 +11,8 @@ export default class FloatPreview extends Component {
       };
      
     this.canvas = React.createRef();
-    this.downloadLink = React.createRef()
+    this.downloadLink = React.createRef();
+    this.saveImage = this.saveImage.bind(this);
 
   }
 
@@ -20,14 +21,9 @@ export default class FloatPreview extends Component {
       this.setState({ isOpen: true });
     }
     const ctx = this.canvas.current.getContext("2d");
-    let img = new Image();   // Create new img element
-    img.addEventListener('load', function() {
-      // execute drawImage statements here
-      ctx.drawImage(img, 0, 0);
-
-    }, false);
-img.src = 'logo192.png'
-
+    let img = new Image();
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0);
     ctx.font = "40px Courier";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -36,6 +32,10 @@ img.src = 'logo192.png'
     let inputtext = localStorage.getItem("sparkText");
     console.log("text:"+ inputtext);
     ctx.fillText(inputtext, 210, 75);
+  };
+  img.crossOrigin = "*";
+  img.src = this.props.src;
+  console.log("img.origin: "+img.crossOrigin);
   }
 
   openFloatCart = () => {
@@ -47,7 +47,9 @@ img.src = 'logo192.png'
   };
 
  saveImage= () =>{
-    let image = this.canvas.current.toDataURL("image/jpeg");
+    let image = this.canvas.current.toDataURL("image/png")
+    .replace("image/png", "image/octet-stream");
+    console.log("save image: "+image)
     this.downloadLink.current.href = image;
   };
 
@@ -106,7 +108,7 @@ img.src = 'logo192.png'
               
               </div>
               <div className="buy-btn">
-              <a id="download" href="" ref={this.downloadLink}>
+              <a id="download" download="qiumuzitest.png" ref={this.downloadLink}>
           <Button variant="contained" color="primary" onClick={this.saveImage}>
             Download
           </Button>

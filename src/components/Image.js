@@ -18,12 +18,12 @@ export default class Image extends React.Component {
 
   render() {
     let url = this.props.src;
-    let title = this.props.alt;
     let key = this.props.id;
+    let title = url.split("/").pop()
     return (
       <div>
         <li>
-          <img onClick={this.togglePreview.bind(this)} id={key} src={url} alt={title} />
+          <img onClick={this.togglePreview.bind(this)} id={key} src={url} alt={title} crossOrigin={"*"}/>
         </li>
         <div className = "preview">
           {this.state.showPreview ? (
