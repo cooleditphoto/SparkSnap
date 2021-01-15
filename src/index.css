@@ -219,3 +219,10 @@ border-right:3%;
   border-radius: 20px;  
   background: white;  
 }
+
+.canvas {
+  position: absolute;
+  right : 0;
+  left : 0;
+
+}

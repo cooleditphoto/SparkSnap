@@ -5,15 +5,17 @@ export const PhotoContext = createContext();
 const PhotoContextProvider = props => {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
+       /* `https://ypjijw6zj5.execute-api.us-east-1.amazonaws.com/prod/getphotosbytags?tags=${query}&per_page=24*/
 
   const runSearch = query => {
 console.warn("runsearch query: "+query)
     axios
       .get(
-        `https://ypjijw6zj5.execute-api.us-east-1.amazonaws.com/prod/getphotosbytags?tags=${query}&per_page=24`
-      )
+       `https://api.pexels.com/v1/search?query=${query}&per_page=48&orientation=square`,
+       { headers: { Authorization:'563492ad6f917000010000015174f746dcbe49d3924171700d3225fc' } }     
+       )
       .then(response => {
-        setImages(response.data);
+        setImages(response.data.photos);
         setLoading(false);
       })
       .catch(error => {

@@ -6,6 +6,7 @@ import Search from "./components/Search";
 import NotFound from "./components/NotFound";
 import TextEditor from "./components/TextEditor";
 import RecommendedPhotos from "./components/RecommendedPhotos";
+import SearchForm from "./components/SearchForm";
 
 class PhotoApp extends Component {
   // Prevent page reload, clear input, set URL and push history on submit
@@ -33,7 +34,7 @@ class PhotoApp extends Component {
               <Route
                 exact
                 path="/"
-                render={() => <Redirect to="/search/default" />}
+                render={() => <Redirect to="/search/background" />}
               />
               <Route
                 path="/search/:searchInput"
@@ -42,7 +43,18 @@ class PhotoApp extends Component {
                 )}
               />
               <Route path="/create" component={TextEditor} />
-              <Route path="/choosePhoto" component={RecommendedPhotos} />
+              <Route
+                path="/choosePhoto"
+                render={(props) => (
+                  <div>
+                    <SearchForm
+                      handleSubmit={this.handleSubmit}
+                      history={props.history}
+                    />
+                    <RecommendedPhotos />
+                  </div>
+                )}
+              />
               <Route component={NotFound} />
             </Switch>
           </div>

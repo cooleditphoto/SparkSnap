@@ -1,6 +1,5 @@
 import React from "react";
 import NoImages from "./NoImages";
-import Image from "./Image";
 import FloatPreview from "./FloatPreview";
 
 import UploadPhotoPopup from "./UploadPhotoPopup";
@@ -12,10 +11,11 @@ export default class Gallery extends React.Component {
     this.togglePopup = this.togglePopup.bind(this);
 
     this.state = {
-      showPreview: false,
-      url:""
+      imgUrl: "",
     };
     this.togglePreview = this.togglePreview.bind(this);
+    this.singleImage = React.createRef();
+    this.FloatPreview = React.createRef();
   }
 
   togglePopup() {
@@ -24,10 +24,12 @@ export default class Gallery extends React.Component {
     });
   }
 
-  togglePreview(imgUrl) {
+  togglePreview(url) {
     this.setState({
-      url:imgUrl
+      showPreview:!this.state.showPreview,
+      imgUrl: url,
     });
+   
   }
 
   render() {
@@ -37,11 +39,20 @@ export default class Gallery extends React.Component {
     // map variables to each item in fetched image array and return image component
     if (results.length > 0) {
       images = results.map((image) => {
-        let id = image.PhotoId;
-        let url = image.src;
+        let id = image.id;
+        let url = image.src.large;
+        let title = url.split("/").pop();
+
         return (
           <div>
-          <Image id={id} src={url} />
+            <li>
+              <img
+                onClick={this.togglePreview.bind(this,url)}
+                id={id}
+                src={url}
+                alt={title}
+              />
+            </li>{" "}
           </div>
         );
       });
@@ -52,15 +63,26 @@ export default class Gallery extends React.Component {
     return (
       <div>
         <ul className="photo-grid">
-          <div><li> <AddPhotoAlternateIcon onClick={this.togglePopup.bind(this)} /></li></div>
-          {images}</ul>
+          <div>
+            <li>
+              {" "}
+              <AddPhotoAlternateIcon onClick={this.togglePopup.bind(this)} />
+            </li>
+          </div>
+          {images}
+        </ul>
         {noImages}
         <div>
           {this.state.showPopup ? (
             <UploadPhotoPopup closePopup={this.togglePopup.bind(this)} />
           ) : null}
         </div>
-    
+        <div className="preview">
+          {this.state.showPreview ? (
+            <FloatPreview
+src = {this.state.imgUrl}            />
+          ) : null}
+        </div>
       </div>
     );
   }

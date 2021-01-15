@@ -2,8 +2,9 @@ import React, { useContext, useEffect } from "react";
 import { PhotoContext } from "../context/PhotoContext";
 import Gallery from "./Gallery";
 import Loader from "./Loader";
-
+import SearchForm from "./SearchForm"
 const RecommendedPhotos = () => {
+   
   const { images, loading, runSearch } = useContext(PhotoContext);
   useEffect(() => {
    let sparkText =  localStorage.getItem("sparkText");
