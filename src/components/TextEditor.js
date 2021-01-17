@@ -1,31 +1,39 @@
 import React from "react";
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import {Link} from 'react-router-dom';
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import { Link } from "react-router-dom";
+import Alert from "react-bootstrap/Button";
+import Button from "@material-ui/core/Button";
 
 export default class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       input: "",
+      warning: false,
     };
-    // Change code below this line
     this.saveToLocalStorage = this.saveToLocalStorage.bind(this);
     this.handleChange = this.handleChange.bind(this);
-
-    // Change code above this line
+    this.changeTextColor = this.changeTextColor.bind(this);
+    this.changeFont = this.changeFont.bind(this);
   }
   handleChange(event) {
     this.setState({
       input: event.target.value,
     });
+    this.setState({ warning: false });
+    let inputtextLines = this.state.input.split(/\n/g);
+    let i = 0;
+    for (i = 0; i < inputtextLines.length; i++) {
+      if (inputtextLines[i].length > 28) {
+        this.setState({ warning: true });
+        return;
+      }
+    }
   }
   saveToLocalStorage() {
-    alert(this.state.input);
     localStorage.setItem("sparkText", this.state.input);
     var pos = require("pos");
-    var words = new pos.Lexer().lex(
-     this.state.input
-    );
+    var words = new pos.Lexer().lex(this.state.input);
     var tagger = new pos.Tagger();
     var taggedWords = tagger.tag(words);
     let searchTags = [];
@@ -38,14 +46,47 @@ export default class TextEditor extends React.Component {
         searchTags.push(word);
       }
     }
+    if (searchTags.length === 0) {
+      searchTags.push("background");
+    }
     let searchTagsString = searchTags.toString();
-alert("searchtags: "+searchTagsString);
     localStorage.setItem("search", searchTagsString);
   }
+
+  changeFont() {}
+
+  changeTextColor() {}
+
   render() {
+    let button;
+    if (this.state.warning) {
+      button = (
+        <Alert key={4} variant="warning">
+          Please modify your input! the word count per line exceeds the maximum.
+        </Alert>
+      );
+    } else {
+      button = (
+        <Link to="/choosePhoto">
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<ArrowForwardIcon />}
+            onClick={this.saveToLocalStorage.bind(this)}
+          >
+            Next
+          </Button>
+        </Link>
+      );
+    }
     return (
       <div className="TextEditor">
-        <select onChange="formatDoc('fontname',this[this.selectedIndex].value);this.selectedIndex=0;">
+        <div>
+          <Alert key={0} variant="primary">
+            Please don't exceed 10 lines, the lines ouside 10 will be ignored
+          </Alert>
+        </div>
+        <select onChange={this.changeFont.bind(this)}>
           <option className="heading" selected>
             - font -
           </option>
@@ -54,19 +95,7 @@ alert("searchtags: "+searchTagsString);
           <option>Courier New</option>
           <option>Times New Roman</option>
         </select>
-        <select onChange="formatDoc('fontsize',this[this.selectedIndex].value);this.selectedIndex=0;">
-          <option className="heading" selected>
-            - size -
-          </option>
-          <option value="1">Very small</option>
-          <option value="2">A bit small</option>
-          <option value="3">Normal</option>
-          <option value="4">Medium-large</option>
-          <option value="5">Big</option>
-          <option value="6">Very big</option>
-          <option value="7">Maximum</option>
-        </select>
-        <select onChange="formatDoc('forecolor',this[this.selectedIndex].value);this.selectedIndex=0;">
+        <select onChange={this.changeTextColor.bind(this)}>
           <option className="heading" selected>
             - color -
           </option>
@@ -80,13 +109,8 @@ alert("searchtags: "+searchTagsString);
           id="spark-text"
           onChange={this.handleChange.bind(this)}
         ></textarea>
-       <Link to="/choosePhoto">
-        <ArrowForwardIcon
-          onClick={this.saveToLocalStorage.bind(this)}
-        >
-        </ArrowForwardIcon>
-        </Link>
-       
+
+        {button}
       </div>
     );
   }

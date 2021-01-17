@@ -1,11 +1,12 @@
 import React from "react";
-import CreateSparkSnap from "./CreateDropDown";
+import CreateSparkSnap from "./CreateSparkSnap";
 
-const Header = ({ history, handleSubmit }) => {
+const Header = () => {
   return (
     <div>
-      <CreateSparkSnap/>
       <h1>SparkSnap</h1>
+      <CreateSparkSnap/>
+
     </div>
   );
 };
