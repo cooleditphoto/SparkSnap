@@ -103,7 +103,7 @@ console.log("timestamp: "+Date.now())
 console.log("filename: "+this.state.imageTitle)
     axios
       .post(
-        `https://yswgq8p1kg.execute-api.us-east-1.amazonaws.com/prod/sparksnap`,
+        `https://ldh3dt5zb6.execute-api.us-east-1.amazonaws.com/prod/sparksnap`,
         {
           data: sparksnap,
           filename: this.state.imageTitle,
