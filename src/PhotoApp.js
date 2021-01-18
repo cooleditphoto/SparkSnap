@@ -8,6 +8,7 @@ import TextEditor from "./components/TextEditor";
 import RecommendedPhotos from "./components/RecommendedPhotos";
 import SearchForm from "./components/SearchForm";
 import Footer from "./components/Footer";
+import SparkSnap from "./components/SparkSnap";
 class PhotoApp extends Component {
   // Prevent page reload, clear input, set URL and push history on submit
   handleSubmit = (e, history, searchInput) => {
@@ -32,7 +33,11 @@ class PhotoApp extends Component {
               <Route
                 exact
                 path="/"
-                render={() => <Redirect to="/search/background" />}
+                render={() => (
+                  <div>
+                   <SparkSnap/>
+                  </div>
+                )}
               />
               <Route
                 path="/search/:searchInput"

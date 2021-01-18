@@ -2,15 +2,22 @@ import React from "react";
 import NoImages from "./NoImages";
 import UploadImageIcon from "../static/upload-image.png";
 import Button from "@material-ui/core/Button";
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 import "./Style.scss";
+import axios from "axios";
+import { withRouter } from "react-router-dom";
 
-export default class Gallery extends React.Component {
+class Gallery extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       imgUrl: "",
       isPreviewOpen: false,
+      showpublishresult: false,
+      publishResponse: false,
+      imageTitle: "",
     };
 
     this.handleUploadImage = this.handleUploadImage.bind(this);
@@ -20,6 +27,7 @@ export default class Gallery extends React.Component {
     this.canvas = React.createRef();
     this.downloadLink = React.createRef();
     this.saveImage = this.saveImage.bind(this);
+    this.publishSparkSnap = this.publishSparkSnap.bind(this);
   }
 
   changeCanvas(imgUrl) {
@@ -53,18 +61,21 @@ export default class Gallery extends React.Component {
 
   saveImage = () => {
     let image = this.canvas.current
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    console.log("save image: " + image);
+      .toDataURL("image/jpg")
+      .replace("image/jpg", "image/octet-stream");
     this.downloadLink.current.href = image;
   };
 
-  togglePreview(url) {
+  togglePreview(url, filename) {
     if (this.state.isPreviewOpen) {
+      this.setState({
+        imageTitle: filename + ".jpg",
+      });
       this.changeCanvas(url);
     } else {
       this.setState({
         isPreviewOpen: true,
+        imageTitle: filename + ".jpg",
       });
       this.changeCanvas(url);
     }
@@ -84,11 +95,53 @@ export default class Gallery extends React.Component {
     }
   }
 
+  publishSparkSnap() {
+    let sparksnap = this.canvas.current.toDataURL("image/jpg").replace(/^data:image\/\w+;base64,/, "");
+
+    console.log("sparksnap data: " + sparksnap);
+console.log("timestamp: "+Date.now())
+console.log("filename: "+this.state.imageTitle)
+    axios
+      .post(
+        `https://yswgq8p1kg.execute-api.us-east-1.amazonaws.com/prod/sparksnap`,
+        {
+          data: sparksnap,
+          filename: this.state.imageTitle,
+          timestamp: Date.now(),
+          headers: { "x-api-key": "XHHMfbwTtz5LBTv4AR9hY60NdcySjcuC2GUeNBwE" },
+        }
+      )
+      .then((response) => {
+        this.setState({ showpublishresult: true, publishResponse: true });
+      })
+      .catch((error) => {
+        console.log("publsih error");
+        this.setState({ showpublishresult: true, publishResponse: false });
+      });
+
+    this.props.history.push("/");
+  }
   render() {
     let classes = ["float-cart"];
-
     if (!!this.state.isPreviewOpen) {
       classes.push("float-cart--open");
+    }
+
+    let publishResult;
+    if (this.state.showpublishresult) {
+      if (!this.state.publishResponse) {
+        publishResult = (
+          <Snackbar autoHideDuration={3000}>
+            <Alert severity="error">Publish failed!</Alert>
+          </Snackbar>
+        );
+      } else {
+        publishResult = (
+          <Snackbar autoHideDuration={3000}>
+            <Alert severity="success">Publish succeeded!</Alert>
+          </Snackbar>
+        );
+      }
     }
 
     const results = this.props.data;
@@ -99,15 +152,15 @@ export default class Gallery extends React.Component {
       images = results.map((image) => {
         let id = image.id;
         let url = image.src.large;
-        let title = url.split("/").pop();
-
+        let urlSplit = image.url.split("/");
+        let filename = urlSplit[urlSplit.length - 2];
         return (
           <div>
             <img
-              onClick={this.togglePreview.bind(this, url)}
+              onClick={this.togglePreview.bind(this, url, filename)}
               id={id}
               src={url}
-              alt={title}
+              alt={filename}
             />
           </div>
         );
@@ -120,7 +173,7 @@ export default class Gallery extends React.Component {
       <div>
         <div className="photo-grid">
           <div>
-            <label for="upload_image">
+            <label htmlFor="upload_image">
               <img src={UploadImageIcon} alt={UploadImageIcon} />
             </label>
             <input
@@ -161,7 +214,7 @@ export default class Gallery extends React.Component {
               <div className="float-cart__footer">
                 <a
                   id="download"
-                  download={this.state.imgUrl.split("/").pop()}
+                  download={this.state.imageTitle}
                   ref={this.downloadLink}
                 >
                   <Button
@@ -172,11 +225,21 @@ export default class Gallery extends React.Component {
                     Download
                   </Button>
                 </a>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.publishSparkSnap}
+                >
+                  Publish
+                </Button>
               </div>
             </div>
           </div>
         </div>
+        {publishResult}
       </div>
     );
   }
 }
+
+export default withRouter(Gallery);

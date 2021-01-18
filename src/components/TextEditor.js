@@ -82,28 +82,12 @@ export default class TextEditor extends React.Component {
     return (
       <div className="TextEditor">
         <div>
-          <Alert key={0} variant="primary">
-            Please don't exceed 10 lines, the lines ouside 10 will be ignored
-          </Alert>
+          <p className="alert">
+            {" "}
+            Please don't exceed 10 lines, the lines outside of the first 10 will be ignored
+          </p>
         </div>
-        <select onChange={this.changeFont.bind(this)}>
-          <option className="heading" selected>
-            - font -
-          </option>
-          <option>Arial</option>
-          <option>Arial Black</option>
-          <option>Courier New</option>
-          <option>Times New Roman</option>
-        </select>
-        <select onChange={this.changeTextColor.bind(this)}>
-          <option className="heading" selected>
-            - color -
-          </option>
-          <option value="red">Red</option>
-          <option value="blue">Blue</option>
-          <option value="green">Green</option>
-          <option value="black">Black</option>
-        </select>
+
         <textarea
           className="spark"
           id="spark-text"

@@ -1,12 +1,12 @@
 import React from "react";
-import CreateSparkSnap from "./CreateSparkSnap";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <div>
-      <h1>SparkSnap</h1>
-      <CreateSparkSnap/>
-
+      <Link to="/">
+        <h1>SparkSnap</h1>
+      </Link>
     </div>
   );
 };
