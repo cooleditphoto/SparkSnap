@@ -2,8 +2,6 @@ import React from "react";
 import NoImages from "./NoImages";
 import UploadImageIcon from "../static/upload-image.png";
 import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
-import Snackbar from "@material-ui/core/Snackbar";
 import "./Style.scss";
 import axios from "axios";
 import { withRouter } from "react-router-dom";
@@ -85,10 +83,14 @@ class Gallery extends React.Component {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       if (this.state.isPreviewOpen) {
+        this.setState({
+          imageTitle:img.name
+        });
         this.changeCanvas(URL.createObjectURL(img));
       } else {
         this.setState({
           isPreviewOpen: true,
+          imageTitle:img.name,
         });
         this.changeCanvas(URL.createObjectURL(img));
       }
@@ -96,11 +98,11 @@ class Gallery extends React.Component {
   }
 
   publishSparkSnap() {
-    let sparksnap = this.canvas.current.toDataURL("image/jpg").replace(/^data:image\/\w+;base64,/, "");
+    this.setState({ showpublishresult: true });
+    let sparksnap = this.canvas.current
+      .toDataURL("image/jpg")
+      .replace(/^data:image\/\w+;base64,/, "");
 
-    console.log("sparksnap data: " + sparksnap);
-console.log("timestamp: "+Date.now())
-console.log("filename: "+this.state.imageTitle)
     axios
       .post(
         `https://ldh3dt5zb6.execute-api.us-east-1.amazonaws.com/prod/sparksnap`,
@@ -112,36 +114,23 @@ console.log("filename: "+this.state.imageTitle)
         }
       )
       .then((response) => {
-        this.setState({ showpublishresult: true, publishResponse: true });
+        
       })
       .catch((error) => {
-        console.log("publsih error");
-        this.setState({ showpublishresult: true, publishResponse: false });
+        console.log("publish error", error);
       });
-
-    this.props.history.push("/");
+      setTimeout(
+        function() {
+            this.props.history.push('/');
+        }
+        .bind(this),
+        3000
+    );
   }
   render() {
     let classes = ["float-cart"];
     if (!!this.state.isPreviewOpen) {
       classes.push("float-cart--open");
-    }
-
-    let publishResult;
-    if (this.state.showpublishresult) {
-      if (!this.state.publishResponse) {
-        publishResult = (
-          <Snackbar autoHideDuration={3000}>
-            <Alert severity="error">Publish failed!</Alert>
-          </Snackbar>
-        );
-      } else {
-        publishResult = (
-          <Snackbar autoHideDuration={3000}>
-            <Alert severity="success">Publish succeeded!</Alert>
-          </Snackbar>
-        );
-      }
     }
 
     const results = this.props.data;
@@ -210,14 +199,13 @@ console.log("filename: "+this.state.imageTitle)
                   height={775}
                 />
               </div>
-
               <div className="float-cart__footer">
                 <a
                   id="download"
                   download={this.state.imageTitle}
                   ref={this.downloadLink}
                 >
-                  <Button
+                  <Button className="CanvasClick"
                     variant="contained"
                     color="primary"
                     onClick={this.saveImage}
@@ -225,7 +213,7 @@ console.log("filename: "+this.state.imageTitle)
                     Download
                   </Button>
                 </a>
-                <Button
+                <Button className="CanvasClick"
                   variant="contained"
                   color="primary"
                   onClick={this.publishSparkSnap}
@@ -236,7 +224,6 @@ console.log("filename: "+this.state.imageTitle)
             </div>
           </div>
         </div>
-        {publishResult}
       </div>
     );
   }

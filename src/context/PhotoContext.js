@@ -8,7 +8,6 @@ const PhotoContextProvider = props => {
        /* `https://ypjijw6zj5.execute-api.us-east-1.amazonaws.com/prod/getphotosbytags?tags=${query}&per_page=24*/
 
   const runSearch = query => {
-console.warn("runsearch query: "+query)
     axios
       .get(
        `https://api.pexels.com/v1/search?query=${query}&per_page=48&orientation=square`,
