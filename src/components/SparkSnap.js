@@ -22,8 +22,8 @@ class SparkSnap extends React.Component {
 
     if (sparksnaps.length > 0) {
       sparksnapItems = sparksnaps.map((image) => {
-        let url = image.url;
-        let filename = image.name;
+        let url = image.src;
+        let filename = image.filename;
         return (
           <div>
             <img src={url} alt={filename} />
