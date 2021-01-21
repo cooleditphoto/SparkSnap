@@ -33,17 +33,17 @@ class Gallery extends React.Component {
     let img = new Image();
     img.onload = function () {
       ctx.fillStyle = "black";
-      ctx.fillRect(0, 0, 450, 800);
+      ctx.fillRect(0, 0, 450, 775);
       ctx.drawImage(img, 25, 25, 400, 400);
-      ctx.font = "24px Courier";
+      ctx.font = "22px Courier";
       ctx.textAlign = "start";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "white";
       let inputtext = localStorage.getItem("sparkText");
       let inputtextLines = inputtext.replace(/\n/g, "<br>\n").split("<br>\n");
-      let start = 475;
+      let start = 470;
       let i = 0;
-      for (i = 0; i < Math.min(inputtextLines.length, 10); i++) {
+      for (i = 0; i < Math.min(inputtextLines.length, 12); i++) {
         ctx.fillText(inputtextLines[i], 25, start);
         start = start + 25;
       }
@@ -59,8 +59,8 @@ class Gallery extends React.Component {
 
   saveImage = () => {
     let image = this.canvas.current
-      .toDataURL("image/jpg")
-      .replace("image/jpg", "image/octet-stream");
+      .toDataURL("image/png")
+      .replace("image/png", "image/octet-stream");
     this.downloadLink.current.href = image;
   };
 
