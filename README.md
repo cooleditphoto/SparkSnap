@@ -2,7 +2,7 @@
 <br>SparkSnap is a simple poster creator.</br>
 
 <br><strong> Live demo: muziqiu.com <strong></br>
-
+<br>![](demo3-720p.gif)>
 <br>JS framwork: ReactJS including React Hooks</br>
 <br>Routing: React Router</br>
 <br>RESTful API calls: React context and axios</br>
